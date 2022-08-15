@@ -1,0 +1,17 @@
+{
+     "Logging": {
+       "LogLevel": {
+         "Default": "Information",
+         "Microsoft.AspNetCore": "Warning"
+       }
+     },
+     "ConnectionStrings": {
+       "DefaultConnection": "Data Source=localhost;Initial Catalog=ReadListDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+     },
+     "JwtSettings": {
+       "ValidIssuer": "ReadList",
+       "ValidAudience": "*",
+       "Secret": "77217A25432A462D4A404E635266556A586E3272357538782F413F4428472B4B",
+       "ExpiresIn": "7"
+     }
+}
