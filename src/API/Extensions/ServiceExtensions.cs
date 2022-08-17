@@ -178,7 +178,8 @@ public static class ServiceExtensions
             .ConfigureApiBehaviorOptions(o =>
             {
                 o.InvalidModelStateResponseFactory = context => new ValidationFailedResult(context.ModelState);
-            });//.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserValidator>());
+            });
+            //.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserValidator>());
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     }
 }
