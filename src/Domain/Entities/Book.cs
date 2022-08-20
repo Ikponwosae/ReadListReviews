@@ -9,7 +9,11 @@ namespace Domain.Entities
         public string Title { get; set; }
         public string Description { get; set; }
         public string Author { get; set; }
+        public string? AuthorDetails { get; set; }
         public string ShopLink { get; set; }
+        public string Publisher { get; set; }
+        public string BookFormat { get; set; }
+        public string Isbn { get; set; }
 
         //Book-Image
         public Photo? BookImage { get; set; }
