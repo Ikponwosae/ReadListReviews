@@ -18,6 +18,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Application.Validations;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace API.Extensions;
 
@@ -49,20 +52,20 @@ public static class ServiceExtensions
                 opts.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
-    public static void ConfigureVersioning(this IServiceCollection services)
-    {
-        services.AddApiVersioning(opt =>
-        {
-            opt.ReportApiVersions = true;
-            opt.AssumeDefaultVersionWhenUnspecified = true;
-            opt.DefaultApiVersion = new ApiVersion(1, 0);
-        });
-        services.AddVersionedApiExplorer(opt =>
-        {
-            opt.GroupNameFormat = "'v'VVV";
-            opt.SubstituteApiVersionInUrl = true;
-        });
-    }
+    //public static void ConfigureVersioning(this IServiceCollection services)
+    //{
+    //    services.AddApiVersioning(opt =>
+    //    {
+    //        opt.ReportApiVersions = true;
+    //        opt.AssumeDefaultVersionWhenUnspecified = true;
+    //        opt.DefaultApiVersion = new ApiVersion(1, 0);
+    //    });
+    //    services.AddVersionedApiExplorer(opt =>
+    //    {
+    //        opt.GroupNameFormat = "'v'VVV";
+    //        opt.SubstituteApiVersionInUrl = true;
+    //    });
+    //}
 
     //public static void ConfigureResponseCaching(this IServiceCollection services) =>
     //    services.AddResponseCaching();
@@ -123,23 +126,15 @@ public static class ServiceExtensions
         {
             s.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "Prunedge Web API",
+                Title = "Better Reads Web API",
                 Version = "v1",
-                Description = "Prunedge Web API Template",
-                TermsOfService = new Uri("https://prunedge.com/terms"),
+                Description = "Add books to your Read List and leave reviews",
                 Contact = new OpenApiContact
                 {
-                    Name = "Daniel Ale",
-                    Email = "developer@prunedge.com",
-                    Url = new Uri("https://prunedge.com/danielale")
-                },
-                License = new OpenApiLicense
-                {
-                    Name = "Prunedge API LICX",
-                    Url = new Uri("https://prunedge.com/developer-licence")
+                    Name = "Ikponwosa",
+                    Email = "ikponwosae@outlook.com"
                 }
             });
-            //s.SwaggerDoc("v2", new OpenApiInfo { Title = "Prunedge Web API2", Version = "v2" });
 
             var xmlFile = $"{typeof(API.AssemblyReference).Assembly.GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -178,8 +173,25 @@ public static class ServiceExtensions
             .ConfigureApiBehaviorOptions(o =>
             {
                 o.InvalidModelStateResponseFactory = context => new ValidationFailedResult(context.ModelState);
-            });
-            //.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserValidator>());
+            })
+            .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserValidator>());
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+    }
+
+    public static void ConfigureApiVersioning(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddApiVersioning(opt =>
+        {
+            opt.AssumeDefaultVersionWhenUnspecified = true;
+            opt.DefaultApiVersion = new ApiVersion(1, 0);
+            opt.ReportApiVersions = true;
+        });
+        services.AddVersionedApiExplorer(opt =>
+        {
+            opt.GroupNameFormat = "'v'VVV";
+            opt.SubstituteApiVersionInUrl = true;
+        });
+        //services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+        services.AddMvcCore().AddApiExplorer();
     }
 }

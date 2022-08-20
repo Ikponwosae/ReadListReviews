@@ -68,6 +68,8 @@ namespace Infrastructure.Data.DbContext
                     LockoutEnabled = false,
                     UserName = email,
                     PhoneNumber = "07036000000",
+                    RefreshToken = Guid.NewGuid().ToString(),
+                    Role = EUserRole.Admin.ToString(),
                 };
 
                 var role = EUserRole.Admin.ToString();
@@ -75,8 +77,8 @@ namespace Infrastructure.Data.DbContext
                 await userManager.CreateAsync(user, "Admin123@");
                 if (!(await userManager.IsInRoleAsync(user, role)))
                 {
-                    var newUser = await query.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.UserName.Equals(email));
-                    await userManager.AddToRoleAsync(newUser, role);
+                    //var newUser = await query.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.UserName.Equals(email));
+                    await userManager.AddToRoleAsync(user, role);
                 }
             }
         }
