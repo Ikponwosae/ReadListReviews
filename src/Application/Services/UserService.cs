@@ -43,6 +43,7 @@ namespace Application.Services
             user.UserName = model.Email;
             user.Password = _userManager.PasswordHasher.HashPassword(user, model.Password);
             user.EmailConfirmed = true;
+            user.Gender = model.Gender;
             user.Status = EUserStatus.Active.ToString();
             user.CreatedAt = DateTime.UtcNow;
             user.Role = EUserRole.User.ToString();
@@ -100,7 +101,7 @@ namespace Application.Services
             if (userEntity == null)
                 throw new RestException(HttpStatusCode.NotFound, "User not found");
 
-            var updatedUser = _mapper.Map<User>(model);
+            var updatedUser = _mapper.Map(model, userEntity); ;
             updatedUser.UpdatedAt = DateTime.UtcNow;
             updatedUser.Role = EUserRole.User.ToString();
 
