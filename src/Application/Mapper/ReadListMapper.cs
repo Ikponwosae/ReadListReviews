@@ -11,6 +11,8 @@ namespace Application.Mapper
             CreateMap<CreateReadListDTO, ReadList>();
             CreateMap<ReadList, UserReadListDTO>()
                 .ForMember(dest => dest.Books, opt => opt.MapFrom(src => src.Books))
+                .ForMember(dest => dest.ReadListId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Owner.Id))
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Owner.FirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Owner.LastName))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Owner.Email))
