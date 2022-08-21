@@ -2,6 +2,7 @@
 using Application.DataTransferObjects;
 using Application.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -39,6 +40,7 @@ namespace API.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
+        [AllowAnonymous]
         [Route("register")]
         [ProducesResponseType(typeof(SuccessResponse<UserDTO>), 200)]
         public async Task<IActionResult> UserRegistration([FromBody] UserCreateDTO model)
