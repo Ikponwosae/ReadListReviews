@@ -11,6 +11,6 @@ namespace Domain.Entities
         //Navigational Properties
         public Guid? CreatedById { get; set; }
         public User CreatedBy { get; set; }
-        public ICollection<Book> Books { get; set; }
+        public ICollection<Book>? Books { get; set; }
     }
 }

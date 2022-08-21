@@ -12,6 +12,8 @@ namespace Domain.Entities
         //Navigational properties
         public Guid UserId { get; set; }
         public User Owner { get; set; }
+        public Guid BookId { get; set; }
+        public Book Book { get; set; }
 
     }
 }

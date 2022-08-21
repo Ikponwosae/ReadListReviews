@@ -15,6 +15,10 @@ namespace Infrastructure.Data.Configurations
             builder.HasOne(x => x.BookImage)
                .WithOne(b => b.Book)
                .HasForeignKey<Photo>(x => x.BookId);
+            
+            builder.HasMany(x => x.Reviews)
+                .WithOne(b => b.Book)
+                .OnDelete(DeleteBehavior.Cascade);
 
             //builder.HasOne(b => b.Category)
             //    .WithMany(x => x.Books);

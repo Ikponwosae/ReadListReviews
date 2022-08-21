@@ -14,6 +14,8 @@ namespace Domain.Entities
         public string Publisher { get; set; }
         public string BookFormat { get; set; }
         public string Isbn { get; set; }
+        public int? Rating { get; set; }
+        public ICollection<Review>? Reviews { get; set; }
 
         //Book-Image
         public Photo? BookImage { get; set; }
