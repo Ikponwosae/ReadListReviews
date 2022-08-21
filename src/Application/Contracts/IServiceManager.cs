@@ -6,5 +6,6 @@ namespace Application.Contracts
     {
         IAuthenticationService AuthenticationService { get; }
         IUserService UserService { get; }
+        ISingleUserService SingleUserService { get; }
     }
 }
