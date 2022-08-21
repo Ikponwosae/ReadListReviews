@@ -54,6 +54,15 @@ namespace Application.Services
             await _userManager.UpdateAsync(user);
 
             var token = await CreateToken(user, true);
+            var registerToken = new Token
+            {
+                UserId = user.Id,
+                Value = token.AccessToken,
+                TokenType = "User Logged In"
+            };
+
+            await _repository.Token.AddAsync(registerToken);
+            await _repository.SaveChangesAsync();
 
             return new SuccessResponse<AuthDTO>
             {
@@ -128,40 +137,40 @@ namespace Application.Services
             return new TokenResponse<object>
             {
                 Message = "Valid Token",
-                Data = user,
+                Data = _mapper.Map<UserDTO>(user),
                 IsValid = true
             };
         }
 
-        //public async Task<SuccessResponse<object>> SetPassword(SetPasswordDTO model)
-        //{
-        //    var tokenEntity = await _repository.Token.FirstOrDefaultAsync(x => x.Value == model.Token);
+        public async Task<SuccessResponse<object>> SetPassword(SetPasswordDTO model)
+        {
+            var tokenEntity = await _repository.Token.FirstOrDefaultAsync(x => x.Value == model.Token);
 
-        //    if (tokenEntity == null)
-        //        throw new RestException(HttpStatusCode.BadRequest, "Invalid token");
+            if (tokenEntity == null)
+                throw new RestException(HttpStatusCode.BadRequest, "Invalid token");
 
-        //    var isTokenValid = CustomToken.IsTokenValid(tokenEntity);
-        //    if (!isTokenValid)
-        //        throw new RestException(HttpStatusCode.BadRequest, "Invalid Token");
+            var isTokenValid = CustomToken.IsTokenValid(tokenEntity);
+            if (!isTokenValid)
+                throw new RestException(HttpStatusCode.BadRequest, "Invalid Token");
 
-        //    var user = await _repository.User.GetByIdAsync(tokenEntity.UserId);
-        //    if (user == null)
-        //        throw new RestException(HttpStatusCode.NotFound, "User cannot be found");
+            var user = await _repository.User.GetByIdAsync(tokenEntity.UserId);
+            if (user == null)
+                throw new RestException(HttpStatusCode.NotFound, "User cannot be found");
 
-        //    user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
-        //    user.EmailConfirmed = true;
-        //    user.Status = EUserStatus.Active.ToString();
-        //    user.UpdatedAt = DateTime.UtcNow;
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
+            user.EmailConfirmed = true;
+            user.Status = EUserStatus.Active.ToString();
+            user.UpdatedAt = DateTime.UtcNow;
 
-        //    _repository.Token.Remove(tokenEntity);
-        //    _repository.User.Update(user);
+            _repository.Token.Remove(tokenEntity);
+            _repository.User.Update(user);
 
-        //    await _repository.SaveChangesAsync();
-        //    return new SuccessResponse<object>
-        //    {
-        //        Message = "Password set successfully"
-        //    };
-        //}
+            await _repository.SaveChangesAsync();
+            return new SuccessResponse<object>
+            {
+                Message = "Password set successfully"
+            };
+        }
 
         #region private methods
         private async Task<AuthDTO> CreateToken(User user, bool populateExp)

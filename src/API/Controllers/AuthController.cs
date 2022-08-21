@@ -70,4 +70,18 @@ public class AuthController : ControllerBase
         var response = await _service.AuthenticationService.VerifyToken(token);
         return Ok(response);
     }
+
+    /// <summary>
+    /// Endpoint to set password
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    [HttpPost("set-password")]
+    [ProducesResponseType(typeof(SuccessResponse<SetPasswordDTO>), 200)]
+    public async Task<IActionResult> SetPassword([FromForm] SetPasswordDTO model)
+    {
+        var response = await _service.AuthenticationService.SetPassword(model);
+
+        return Ok(response);
+    }
 }

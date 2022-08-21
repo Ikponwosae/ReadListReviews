@@ -9,5 +9,5 @@ public interface IAuthenticationService
     Task<SuccessResponse<AuthDTO>> RefreshToken(RefreshTokenDTO model);
     Task<SuccessResponse<object>> ResetPassword(ResetPasswordDTO model);
     Task<TokenResponse<object>> VerifyToken(string token);
-    //Task<SuccessResponse<object>> SetPassword(SetPasswordDTO model);
+    Task<SuccessResponse<object>> SetPassword(SetPasswordDTO model);
 }
