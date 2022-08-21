@@ -71,6 +71,7 @@ namespace Application.DataTransferObjects
 
     public record UserReadListDTO : UserDTO
     {
+        public Guid ReadListId { get; set; }
         public string Name { get; set; }
         public ICollection<ViewBookDTO> Books { get; set; }
     }

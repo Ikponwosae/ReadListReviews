@@ -24,6 +24,7 @@ namespace Domain.Entities
         public DateTime RefreshTokenExpiryTime { get; set; }
 
         //Navigational Properties
+        public Guid ReadListId { get; set; }
         public ReadList? ReadList { get; set; }
         public ICollection<Review>? Reviews { get; set; }
 

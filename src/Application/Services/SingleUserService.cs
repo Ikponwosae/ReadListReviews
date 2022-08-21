@@ -29,7 +29,7 @@ namespace Application.Services
             if (user == null)
                 throw new RestException(HttpStatusCode.NotFound, "User not found");
 
-            if (user.ReadList != null)
+            if (user.ReadListId != Guid.Empty)
             {
                 throw new RestException(HttpStatusCode.BadRequest, "User already has readlist");
             }
@@ -38,7 +38,8 @@ namespace Application.Services
             userReadList.UserId = userId;
             await _repository.ReadList.AddAsync(userReadList);
 
-            user.ReadList = userReadList;
+            user.ReadListId = userReadList.Id;
+
             _repository.User.Update(user);
             await _repository.SaveChangesAsync();
             
@@ -49,11 +50,71 @@ namespace Application.Services
             };
         }
 
-        //public async Task<SuccessResponse<UserReadListDTO>> AddBookToLReadist(Guid bookId)
-        //{
-        //    var book = await _repository.Book.GetByIdAsync(bookId);
+        public async Task<SuccessResponse<UserReadListDTO>> AddBookToLReadist(Guid userId, Guid bookId)
+        {
+            var book = await _repository.Book.GetByIdAsync(bookId);
+            if (book is null)
+                throw new RestException(HttpStatusCode.NotFound, "Book cannot be found");
 
-        //}
+            var user = await _repository.User.GetByIdAsync(userId);
+            if (user is null)
+                throw new RestException(HttpStatusCode.NotFound, "User not found");
+
+            var userReadList = await _repository.ReadList.FirstOrDefaultAsync(x => x.Id == user.ReadListId);
+
+            userReadList.Books.Add(book);
+            _repository.ReadList.Update(userReadList);
+            await _repository.SaveChangesAsync();
+
+            return new SuccessResponse<UserReadListDTO>
+            {
+                Data = _mapper.Map<UserReadListDTO>(userReadList),
+                Message = "Book Added to Read List"
+            };
+
+        }
+
+        public async Task RemoveBookFromReadList(Guid userId, Guid bookId)
+        {
+            var book = await _repository.Book.GetByIdAsync(bookId);
+            if (book is null)
+                throw new RestException(HttpStatusCode.NotFound, "Book cannot be found");
+
+            var user = await _repository.User.GetByIdAsync(userId);
+            if (user is null)
+                throw new RestException(HttpStatusCode.NotFound, "User not found");
+
+            var userReadList = await _repository.ReadList.FirstOrDefaultAsync(x => x.Id == user.ReadListId);
+
+            userReadList.Books.Remove(book);
+            _repository.ReadList.Update(userReadList);
+            await _repository.SaveChangesAsync();
+
+        }
+
+        public async Task<SuccessResponse<UserReadListDTO>> RenameReadList(Guid readListId, Guid userId, CreateReadListDTO model)
+        {
+            var readlist = await _repository.ReadList.GetByIdAsync(readListId);
+            if (readlist is null)
+                throw new RestException(HttpStatusCode.NotFound, "Read List does not exist");
+
+            var user = await _repository.User.GetByIdAsync(userId);
+            if (user is null)
+                throw new RestException(HttpStatusCode.NotFound, "User not found");
+
+            if (user.ReadListId != readListId)
+                throw new RestException(HttpStatusCode.BadRequest, "ReadList does not match user signature");
+
+            readlist.Name = model.Name;
+            _repository.ReadList.Update(readlist);
+            await _repository.SaveChangesAsync();
+
+            return new SuccessResponse<UserReadListDTO>
+            {
+                Data = _mapper.Map<UserReadListDTO>(readlist),
+                Message = "Read List Renamed"
+            };
+        }
 
     }
 }
