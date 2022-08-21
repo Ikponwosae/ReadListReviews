@@ -1,4 +1,5 @@
 ﻿using System;
+using Domain.Entities;
 //using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
@@ -61,6 +62,18 @@ namespace Application.DataTransferObjects
         public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Gender { get; set; }
+    }
+
+    public record CreateReadListDTO
+    {
+        public string Name { get; set; }
+    }
+
+    public record UserReadListDTO : UserDTO
+    {
+        public Guid ReadListId { get; set; }
+        public string Name { get; set; }
+        public ICollection<ViewBookDTO> Books { get; set; }
     }
 
     //public record UserResetPasswordDTO
