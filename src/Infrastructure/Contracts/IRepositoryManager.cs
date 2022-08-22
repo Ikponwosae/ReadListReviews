@@ -10,6 +10,7 @@
         ICategoryRepository Category { get; }
         IRoleRepository Role { get; }
         IUserRoleRepository UserRole { get; }
+        IPhotoRepository Photo { get; }
         Task BeginTransaction(Func<Task> action);
         Task SaveChangesAsync();
     }

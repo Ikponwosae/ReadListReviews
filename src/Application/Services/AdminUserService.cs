@@ -161,7 +161,7 @@ namespace Application.Services
             if (category == null)
                 throw new RestException(HttpStatusCode.NotFound, "Category does not exist");
 
-            var book = await _repository.Book.GetByIdAsync(bookId);
+            var book = await _repository.Book.Get(x => x.Id == bookId).FirstOrDefaultAsync();
             if (book == null)
                 throw new RestException(HttpStatusCode.NotFound, "Book cannot be found");
 
@@ -188,6 +188,7 @@ namespace Application.Services
                 throw new RestException(HttpStatusCode.NotFound, "Book cannot be found");
 
             var response = _mapper.Map<BookDTO>(book);
+            response.BookImage = _mapper.Map<BookImageDTO>(await _repository.Photo.Get(x => x.BookId == bookId).FirstOrDefaultAsync());
             response.Category = _mapper.Map<CreateCategoryDTO>(await _repository.Category.GetByIdAsync(book.CategoryId));
 
             return new SuccessResponse<BookDTO>
@@ -214,6 +215,64 @@ namespace Application.Services
             {
                 Data = _mapper.Map<ViewBookDTO>(newBook)
             };
+        }
+
+        public async Task<SuccessResponse<BookDTO>> UpdateBook(Guid bookId, UpdateBookDTO model)
+        {
+            var book = await _repository.Book.Get(x => x.Id == bookId).FirstOrDefaultAsync();
+            if (book == null)
+                throw new RestException(HttpStatusCode.NotFound, "Book does not exist");
+            
+            var updatedBook = _mapper.Map<Book>(model);
+            updatedBook.UpdatedAt = DateTime.Now;
+            updatedBook.CategoryId = book.CategoryId;
+
+            var bookImage = model.BookImage;
+            if(bookImage.Length > 0)
+            {
+                using(var memoryStream = new MemoryStream())
+                {
+                    await bookImage.CopyToAsync(memoryStream);
+                    //Upload file if less than 2MB
+                    if(memoryStream.Length < 2097152)
+                    {
+                        var newPhoto = new Photo()
+                        {
+                            Bytes = memoryStream.ToArray(),
+                            Description = bookImage.FileName,
+                            FileExtension = Path.GetExtension(bookImage.FileName),
+                            Size = bookImage.Length,
+                        };
+
+                        updatedBook.BookImage = newPhoto;
+                    }
+                    else
+                    {
+                        throw new RestException(HttpStatusCode.InternalServerError, "The image uploaded is too large.");
+                    }
+                }
+            }
+
+            _repository.Book.Update(updatedBook);
+            await _repository.SaveChangesAsync();
+
+            var response = _mapper.Map<BookDTO>(updatedBook);
+            response.Category = _mapper.Map<CreateCategoryDTO>(await _repository.Category.GetByIdAsync(book.CategoryId));
+
+            return new SuccessResponse<BookDTO>
+            {
+                Data = response
+            };
+        }
+
+        public async Task DeleteBook(Guid bookId)
+        {
+            var book = await _repository.Book.GetByIdAsync(bookId);
+            if (book == null)
+                throw new RestException(HttpStatusCode.NotFound, "Book does not exist");
+
+            _repository.Book.Delete(book);
+            await _repository.SaveChangesAsync();
         }
     }
 }

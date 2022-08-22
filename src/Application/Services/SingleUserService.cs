@@ -135,5 +135,49 @@ namespace Application.Services
             };
         }
 
+        public async Task<SearchBooksDTO> SearchBookCategoriesAuthors(ResourceParameter parameter)
+        {
+            var booksQuery = _repository.Book.QueryAll()
+                .Select(x => new ViewBookDTO
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Author = x.Author,
+                });
+
+            var categoriesQuery = _repository.Category.QueryAll()
+                .Select(x => new CreateCategoryDTO
+                {
+                    Name = x.Name,
+                });
+
+            if (!string.IsNullOrWhiteSpace(parameter.Search))
+            {
+                string search = parameter.Search.Trim();
+                booksQuery = booksQuery.Where(x =>
+                    x.Title.Contains(search) ||
+                    x.Author.Equals(search) ||
+                    x.Description.Contains(search));
+
+                categoriesQuery = categoriesQuery.Where(x =>
+                x.Name.Contains(search));
+            }
+
+            booksQuery.OrderByDescending(x => x.Title);
+            categoriesQuery.OrderByDescending(x => x.Name);
+
+            var books = await PagedList<ViewBookDTO>.Create(booksQuery, parameter.PageNumber, parameter.PageSize);
+            var categories = await PagedList<CreateCategoryDTO>.Create(categoriesQuery, parameter.PageNumber, parameter.PageSize);
+
+            var response = new SearchBooksDTO
+            {
+                Books = books,
+                Categories = categories
+            };
+
+            return response;
+        }
+
     }
 }

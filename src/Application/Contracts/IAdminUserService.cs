@@ -12,6 +12,8 @@ namespace Application.Contracts
         Task<SuccessResponse<IEnumerable<FetchBook>>> FetchBooksExternal(Guid categoryId);
         Task<SuccessResponse<BookDTO>> ChangeBookCategory(Guid bookId, Guid categoryId);
         Task<SuccessResponse<BookDTO>> GetBookById(Guid bookId);
-        Task<SuccessResponse<ViewBookDTO>> AddBook(Guid categoryId, AddBookDTO model);
+        Task<SuccessResponse<ViewBookDTO>> AddBook(Guid categoryId, AddBookDTO model); 
+        Task<SuccessResponse<BookDTO>> UpdateBook(Guid bookId, UpdateBookDTO model);
+        Task DeleteBook(Guid bookId);
     }
 }

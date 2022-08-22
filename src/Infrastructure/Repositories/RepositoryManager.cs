@@ -14,6 +14,7 @@ namespace Infrastructure.Repositories
         private readonly Lazy<IBookRepository> _bookRepository;
         private readonly Lazy<ICategoryRepository> _categoryRepository;
         private readonly Lazy<IRoleRepository> _roleRepository;
+        private readonly Lazy<IPhotoRepository> _photoRepository;
 
         public RepositoryManager(AppDbContext appDbContext)
         {
@@ -26,6 +27,7 @@ namespace Infrastructure.Repositories
             _bookRepository = new Lazy<IBookRepository>(() => new BookRepository(appDbContext));
             _categoryRepository = new Lazy<ICategoryRepository>(() => new CategoryRepository(appDbContext));
             _roleRepository = new Lazy<IRoleRepository>(() => new RoleRepository(appDbContext));
+            _photoRepository = new Lazy<IPhotoRepository>(() => new PhotoRepository(appDbContext));
         }
 
         public IUserRepository User => _userRepository.Value;
@@ -36,6 +38,7 @@ namespace Infrastructure.Repositories
         public IBookRepository Book => _bookRepository.Value;
         public ICategoryRepository Category => _categoryRepository.Value;
         public IRoleRepository Role => _roleRepository.Value;
+        public IPhotoRepository Photo => _photoRepository.Value;
 
         public async Task SaveChangesAsync() => await _appDbContext.SaveChangesAsync();
         public async Task BeginTransaction(Func<Task> action)

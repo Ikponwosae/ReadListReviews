@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using Application.Helpers;
+using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;
 
 namespace Application.DataTransferObjects
@@ -23,10 +25,15 @@ namespace Application.DataTransferObjects
         public string? BookFormat { get; set; }
         public string Isbn { get; set; }
         public int? Rating { get; set; }
-        public Photo? BookImage { get; set; }
+        public BookImageDTO BookImage { get; set; }
         public string? BookImageUrl { get; set; }
         public ICollection<ViewReviewDTO>? Reviews { get; set; }
         public CreateCategoryDTO Category { get; set; }
+    }
+
+    public record BookImageDTO
+    {
+        public Guid Id { get; set; }
     }
 
     public record FetchBooksDTO
@@ -95,5 +102,26 @@ namespace Application.DataTransferObjects
         public string Isbn { get; set; }
         public int? Rating { get; set; }
         public string? BookImageUrl { get; set; }
+    }
+    
+    public record UpdateBookDTO
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Author { get; set; }
+        public string? AuthorDetails { get; set; }
+        public string? ShopLink { get; set; }
+        public string Publisher { get; set; }
+        public string? BookFormat { get; set; }
+        public string Isbn { get; set; }
+        public int? Rating { get; set; }
+        public string? BookImageUrl { get; set; }
+        public IFormFile? BookImage { get; set; }
+    }
+
+    public record SearchBooksDTO
+    {
+        public PagedList<ViewBookDTO> Books { get; set; }
+        public PagedList<CreateCategoryDTO> Categories { get; set; }
     }
 }
