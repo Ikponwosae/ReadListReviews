@@ -14,6 +14,10 @@ namespace Application.Mapper
             CreateMap<Book, BookDTO>();
             //.ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.CategoryId));
             CreateMap<AddBookDTO, Book>();
+            CreateMap<UpdateBookDTO, Book>()
+                .ForMember(dest => dest.BookImage, opt => opt.Ignore());
+            CreateMap<Photo, BookImageDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
         }
     }
 }

@@ -50,7 +50,7 @@ namespace API.Controllers
 
         // <summary>
         /// Endpoint to get the list of books in a category
-        /// </summary>
+        ///</summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
         [AllowAnonymous]
@@ -62,45 +62,6 @@ namespace API.Controllers
             var response = await _service.AdminUserService.GetAllBooksInACategory(id, nameof(GetAllBooksInACategory), parameters, Url);
             return Ok(response);
         }
-
-        //    /// <summary>
-        //    /// Endpoint to add books to a user's read list
-        //    /// </summary>
-        //    /// <returns></returns>
-        //    [HttpPut]
-        //    [Route("add-book/{bookId}")]
-        //    [ProducesResponseType(typeof(SuccessResponse<UserReadListDTO>), 200)]
-        //    public async Task<IActionResult> AddBookToReadList(Guid userid, Guid bookId)
-        //    {
-        //        var response = await _service.SingleUserService.AddBookToLReadist(userid, bookId);
-        //        return Ok(response);
-        //    }
-
-        //    /// <summary>
-        //    /// Endpoint to delete a book from a user's read list
-        //    /// </summary>
-        //    /// <returns></returns>
-        //    [HttpDelete]
-        //    [Route("delete-book/{bookId}")]
-        //    [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        //    public async Task<IActionResult> RemoveBookFromReadList(Guid userId, Guid bookId)
-        //    {
-        //        await _service.SingleUserService.RemoveBookFromReadList(userId, bookId);
-        //        return NoContent();
-        //    }
-
-        //    /// <summary>
-        //    /// Endpoint to rename a user's read list
-        //    /// </summary>
-        //    /// <returns></returns>
-        //    [HttpPut]
-        //    [Route("rename/{id}")]
-        //    [ProducesResponseType(typeof(SuccessResponse<UserReadListDTO>), 200)]
-        //    public async Task<IActionResult> CreateReadList(Guid id, Guid userId, [FromBody] CreateReadListDTO model)
-        //    {
-        //        var response = await _service.SingleUserService.RenameReadList(id, userId, model);
-        //        return Ok(response);
-        //    }
 
     }
 }

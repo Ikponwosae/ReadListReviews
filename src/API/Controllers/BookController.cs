@@ -64,7 +64,7 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Endpoint to get add a book
+        /// Endpoint to add a book
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
@@ -74,6 +74,49 @@ namespace API.Controllers
         public async Task<IActionResult> AddABook(Guid categoryId, [FromBody] AddBookDTO model)
         {
             var response = await _service.AdminUserService.AddBook(categoryId, model);
+            return Ok(response);
+        }
+        
+        /// <summary>
+        /// Endpoint to update a book's details
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("update")]
+        [ProducesResponseType(typeof(SuccessResponse<BookDTO>), 200)]
+        public async Task<IActionResult> UpdateABook(Guid bookId, [FromForm] UpdateBookDTO model)
+        {
+            var response = await _service.AdminUserService.UpdateBook(bookId, model);
+            return Ok(response);
+        }
+
+        // <summary>
+        /// Endpoint to delete a book
+        ///</summary>
+        /// <returns></returns>
+        /// 
+        [Authorize(Roles = "Admin")]
+        [HttpDelete]
+        [Route("delete-book/{bookId}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> DeleteABook(Guid bookId)
+        {
+            await _service.AdminUserService.DeleteBook(bookId);
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Endpoint to search for book and categories and authors
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("search")]
+        [ProducesResponseType(typeof(SearchBooksDTO), 200)]
+        public async Task<IActionResult> Search([FromQuery] ResourceParameter search)
+        {
+            var response = await _service.SingleUserService.SearchBookCategoriesAuthors(search);
             return Ok(response);
         }
     }
