@@ -8,7 +8,6 @@ using System.Net;
 
 namespace API.Controllers
 {
-    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/books")]
@@ -25,7 +24,7 @@ namespace API.Controllers
         /// Endpoint to fetch book from external api and add to a category
         /// </summary>
         /// <returns></returns>
-        //[AllowAnonymous]
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         [Route("fetch")]
         [ProducesResponseType(typeof(SuccessResponse<IEnumerable<FetchBook>>), 200)]
@@ -34,13 +33,13 @@ namespace API.Controllers
             var response = await _service.AdminUserService.FetchBooksExternal(categoryId);
             return Ok(response);
         }
-        
-        
+
+
         /// <summary>
         /// Endpoint to change a book category
         /// </summary>
         /// <returns></returns>
-        //[Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("change-category")]
         [ProducesResponseType(typeof(SuccessResponse<BookDTO>), 200)]
@@ -68,7 +67,7 @@ namespace API.Controllers
         /// Endpoint to get add a book
         /// </summary>
         /// <returns></returns>
-        //[Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("add")]
         [ProducesResponseType(typeof(SuccessResponse<ViewBookDTO>), 200)]

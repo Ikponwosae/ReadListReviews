@@ -28,7 +28,7 @@ namespace API.Controllers
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(SuccessResponse<CategoryDTO>), 200)]
-        public async Task<IActionResult> CreateReadList(Guid id, [FromBody] CreateCategoryDTO model)
+        public async Task<IActionResult> CreateNewCategory(Guid id, [FromBody] CreateCategoryDTO model)
         {
             var response = await _service.AdminUserService.CreateCategory(id, model);
             return Ok(response);

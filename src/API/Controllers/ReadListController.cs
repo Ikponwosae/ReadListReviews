@@ -25,6 +25,7 @@ namespace API.Controllers
         /// Endpoint to create user's read list
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles ="User")]
         [HttpPost]
         [Route("create/{id}")]
         [ProducesResponseType(typeof(SuccessResponse<UserReadListDTO>), 200)]
@@ -33,12 +34,13 @@ namespace API.Controllers
             var response = await _service.SingleUserService.CreateReadList(id, model);
             return Ok(response);
         }
-        
-        
+
+
         /// <summary>
         /// Endpoint to add books to a user's read list
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles ="User")]
         [HttpPut]
         [Route("add-book/{bookId}")]
         [ProducesResponseType(typeof(SuccessResponse<UserReadListDTO>), 200)]
@@ -47,11 +49,13 @@ namespace API.Controllers
             var response = await _service.SingleUserService.AddBookToLReadist(userid, bookId);
             return Ok(response);
         }
-        
+
         /// <summary>
         /// Endpoint to delete a book from a user's read list
         /// </summary>
         /// <returns></returns>
+        /// 
+        [Authorize(Roles ="User")]
         [HttpDelete]
         [Route("delete-book/{bookId}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
@@ -60,11 +64,12 @@ namespace API.Controllers
             await _service.SingleUserService.RemoveBookFromReadList(userId, bookId);
             return NoContent();
         }
-        
+
         /// <summary>
         /// Endpoint to rename a user's read list
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles ="User")]
         [HttpPut]
         [Route("rename/{id}")]
         [ProducesResponseType(typeof(SuccessResponse<UserReadListDTO>), 200)]
@@ -73,11 +78,12 @@ namespace API.Controllers
             var response = await _service.SingleUserService.RenameReadList(id, userId, model);
             return Ok(response);
         }
-        
+
         /// <summary>
         /// Endpoint to get readlist by id
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles ="User")]
         [HttpGet]
         [Route("{id}")]
         [ProducesResponseType(typeof(SuccessResponse<UserReadListDTO>), 200)]

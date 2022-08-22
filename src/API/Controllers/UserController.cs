@@ -35,7 +35,7 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Endpoint to invite a new user
+        /// Endpoint to register a new user
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
