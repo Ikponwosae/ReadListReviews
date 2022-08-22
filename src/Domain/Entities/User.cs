@@ -6,6 +6,10 @@ namespace Domain.Entities
 {
     public class User : IdentityUser<Guid>, IAuditableEntity
     {
+        public User()
+        {
+            Reviews = new List<Review>();
+        }
         private string _firstName { get; set; }
         public string FirstName { get { return _firstName; } set { _firstName = value; } }
         private string _lastName { get; set; }
@@ -24,7 +28,7 @@ namespace Domain.Entities
         public DateTime RefreshTokenExpiryTime { get; set; }
 
         //Navigational Properties
-        public Guid ReadListId { get; set; }
+        public Guid? ReadListId { get; set; }
         public ReadList? ReadList { get; set; }
         public ICollection<Review>? Reviews { get; set; }
 

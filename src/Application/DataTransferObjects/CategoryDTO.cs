@@ -2,7 +2,13 @@
 {
     public record CategoryDTO
     {
-        public Guid Id { get; set; }
+        public Guid CategoryId { get; set; }
+        public string Name { get; set; }
+        public IEnumerable<ViewBookDTO> Books { get; set; }
+    }
+
+    public record CreateCategoryDTO
+    {
         public string Name { get; set; }
     }
 }

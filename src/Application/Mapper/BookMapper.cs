@@ -9,6 +9,11 @@ namespace Application.Mapper
         public BookMapper()
         {
             CreateMap<Book, ViewBookDTO>();
+            CreateMap<FetchBook, Book>();
+            CreateMap<FetchBooksDTO, FetchBook>();
+            CreateMap<Book, BookDTO>();
+            //.ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.CategoryId));
+            CreateMap<AddBookDTO, Book>();
         }
     }
 }

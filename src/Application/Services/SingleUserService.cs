@@ -116,5 +116,24 @@ namespace Application.Services
             };
         }
 
+        public async Task<SuccessResponse<UserReadListDTO>> GetUserReadList(Guid userId, Guid readListId)
+        {
+            var readlist = await _repository.ReadList.GetByIdAsync(readListId);
+            if (readlist is null)
+                throw new RestException(HttpStatusCode.NotFound, "Read List does not exist");
+
+            var user = await _repository.User.GetByIdAsync(userId);
+            if (user is null)
+                throw new RestException(HttpStatusCode.NotFound, "User not found");
+
+            if (user.ReadListId != readListId)
+                throw new RestException(HttpStatusCode.BadRequest, "ReadList does not match user signature");
+
+            return new SuccessResponse<UserReadListDTO>
+            {
+                Data = _mapper.Map<UserReadListDTO>(readlist)
+            };
+        }
+
     }
 }

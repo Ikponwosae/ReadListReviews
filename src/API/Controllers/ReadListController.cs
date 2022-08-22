@@ -68,9 +68,22 @@ namespace API.Controllers
         [HttpPut]
         [Route("rename/{id}")]
         [ProducesResponseType(typeof(SuccessResponse<UserReadListDTO>), 200)]
-        public async Task<IActionResult> CreateReadList(Guid id, Guid userId, [FromBody] CreateReadListDTO model)
+        public async Task<IActionResult> RenameReadList(Guid id, Guid userId, [FromBody] CreateReadListDTO model)
         {
             var response = await _service.SingleUserService.RenameReadList(id, userId, model);
+            return Ok(response);
+        }
+        
+        /// <summary>
+        /// Endpoint to get readlist by id
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{id}")]
+        [ProducesResponseType(typeof(SuccessResponse<UserReadListDTO>), 200)]
+        public async Task<IActionResult> ViewReadList(Guid id, Guid userId)
+        {
+            var response = await _service.SingleUserService.GetUserReadList(userId, id);
             return Ok(response);
         }
 

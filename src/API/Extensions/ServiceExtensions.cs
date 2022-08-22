@@ -42,8 +42,14 @@ public static class ServiceExtensions
     public static void ConfigureRepositoryManager(this IServiceCollection serviceCollection) =>
         serviceCollection.AddScoped<IRepositoryManager, RepositoryManager>();
 
-    public static void ConfigureServiceManager(this IServiceCollection serviceCollection) =>
+    public static void ConfigureServiceManager(this IServiceCollection serviceCollection, IConfiguration configuration)
+    {
         serviceCollection.AddScoped<IServiceManager, ServiceManager>();
+        serviceCollection.AddHttpClient<AdminUserService>();
+    }
+        
+        
+
 
     public static void ConfigureSqlContext(this IServiceCollection serviceCollection, IConfiguration configuration) =>
         serviceCollection.AddDbContext<AppDbContext>(
