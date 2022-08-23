@@ -20,6 +20,7 @@ namespace Application.Mapper
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
             CreateMap<Review, ViewReviewDTO>();
             CreateMap<ICollection<Review>, ICollection<ViewReviewDTO>>();
+            CreateMap<Review, ReviewDTO>();
         }
     }
 }

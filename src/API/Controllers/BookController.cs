@@ -119,5 +119,20 @@ namespace API.Controllers
             var response = await _service.SingleUserService.SearchBookCategoriesAuthors(search);
             return Ok(response);
         }
+
+        // <summary>
+        /// Endpoint to get all the books available
+        ///</summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("all")]
+        [ProducesResponseType(typeof(PagedResponse<IEnumerable<BookDTO>>), 200)]
+        public async Task<IActionResult> GetAllBooks([FromQuery] ResourceParameter parameters)
+        {
+            var response = await _service.SingleUserService.GetAllBooks(nameof(GetAllBooks), parameters, Url);
+            return Ok(response);
+        }
     }
 }

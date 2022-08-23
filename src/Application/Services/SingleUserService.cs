@@ -6,6 +6,7 @@ using Domain.Entities;
 using Infrastructure.Contracts;
 using Microsoft.Extensions.Configuration;
 using System.Net;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Services
 {
@@ -177,6 +178,41 @@ namespace Application.Services
             };
 
             return response;
+        }
+
+        public async Task<PagedResponse<IEnumerable<BookDTO>>> GetAllBooks(string actionName, ResourceParameter parameters, IUrlHelper urlHelper)
+        {
+            var booksQuery = _repository.Book.QueryAll()
+               .Select(x => new BookDTO
+               {
+                   Id = x.Id,
+                   Title = x.Title,
+                   Description = x.Description,
+                   Author = x.Author,
+                   AuthorDetails = x.AuthorDetails,
+                   ShopLink = x.ShopLink,
+                   Publisher = x.Publisher,
+                   BookFormat = x.BookFormat,
+                   Isbn = x.Isbn,
+                   Rating = x.Rating,
+                   BookImage = _mapper.Map<BookImageDTO>(x.BookImage),
+                   BookImageUrl = x.BookImageUrl,
+               });
+
+            booksQuery.OrderByDescending(x => x.Title);
+
+            var books = await PagedList<BookDTO>.Create(booksQuery, parameters.PageNumber, parameters.PageSize);
+            var page = PageUtility<BookDTO>.CreateResourcePageUrl(parameters, actionName, books, urlHelper);
+
+            return new PagedResponse<IEnumerable<BookDTO>>
+            {
+                Data = books,
+                Message = "All Books",
+                Meta = new Meta
+                {
+                    Pagination = page
+                }
+            };
         }
 
     }
