@@ -78,20 +78,28 @@ namespace Application.Services
             };
         }
 
-        public async Task<PagedResponse<IEnumerable<ViewBookDTO>>> GetAllBooksInACategory(Guid categoryId, string actionName, ResourceParameter parameter, IUrlHelper urlHelper)
+        public async Task<PagedResponse<IEnumerable<BookDTO>>> GetAllBooksInACategory(Guid categoryId, string actionName, ResourceParameter parameter, IUrlHelper urlHelper)
         {
             var category = await _repository.Category.GetByIdAsync(categoryId);
             if (category is null)
                 throw new RestException(HttpStatusCode.NotFound, "Category does not exist");
 
             var categoryBooks = _repository.Book.QueryAll(x => x.CategoryId == categoryId)
-                .Select(x => new ViewBookDTO
+                .Select(x => new BookDTO
                 {
-                    Id = x.Id,
-                    Title = x.Title,
-                    Description = x.Description,
-                    Author = x.Author,
-                });
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                Author = x.Author,
+                AuthorDetails = x.AuthorDetails,
+                ShopLink = x.ShopLink,
+                Publisher = x.Publisher,
+                BookFormat = x.BookFormat,
+                Isbn = x.Isbn,
+                Rating = x.Rating,
+                BookImage = _mapper.Map<BookImageDTO>(x.BookImage),
+                BookImageUrl = x.BookImageUrl,
+        });
 
             if (!string.IsNullOrWhiteSpace(parameter.Search))
             {
@@ -104,10 +112,10 @@ namespace Application.Services
 
             categoryBooks.OrderByDescending(x => x.Title);
 
-            var books = await PagedList<ViewBookDTO>.Create(categoryBooks, parameter.PageNumber, parameter.PageSize, parameter.Sort);
-            var page = PageUtility<ViewBookDTO>.CreateResourcePageUrl(parameter, actionName, books, urlHelper);
+            var books = await PagedList<BookDTO>.Create(categoryBooks, parameter.PageNumber, parameter.PageSize, parameter.Sort);
+            var page = PageUtility<BookDTO>.CreateResourcePageUrl(parameter, actionName, books, urlHelper);
 
-            return new PagedResponse<IEnumerable<ViewBookDTO>>
+            return new PagedResponse<IEnumerable<BookDTO>>
             {
                 Data = books,
                 Message = $"{category.Name} Books",
@@ -272,6 +280,16 @@ namespace Application.Services
                 throw new RestException(HttpStatusCode.NotFound, "Book does not exist");
 
             _repository.Book.Delete(book);
+            await _repository.SaveChangesAsync();
+        }
+
+        public async Task DeleteCategory(Guid categoryId)
+        {
+            var category = await _repository.Category.Get(x => x.Id == categoryId).FirstOrDefaultAsync();
+            if (category == null)
+                throw new RestException(HttpStatusCode.NotFound, "Category does not exist");
+
+            _repository.Category.Delete(category);
             await _repository.SaveChangesAsync();
         }
     }

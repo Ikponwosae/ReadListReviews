@@ -12,6 +12,7 @@ namespace Application.Mapper
             CreateMap<Category, CategoryDTO>()
                 .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Books, opt => opt.MapFrom(src => src.Books));
+            CreateMap<Category, CreateCategoryDTO>();
         }
     }
 }

@@ -56,11 +56,26 @@ namespace API.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("{id}/books")]
-        [ProducesResponseType(typeof(PagedResponse<IEnumerable<ViewBookDTO>>), 200)]
+        [ProducesResponseType(typeof(PagedResponse<IEnumerable<BookDTO>>), 200)]
         public async Task<IActionResult> GetAllBooksInACategory(Guid id, [FromQuery] ResourceParameter parameters)
         {
             var response = await _service.AdminUserService.GetAllBooksInACategory(id, nameof(GetAllBooksInACategory), parameters, Url);
             return Ok(response);
+        }
+
+        // <summary>
+        /// Endpoint to delete a category
+        ///</summary>
+        /// <returns></returns>
+        /// 
+        [Authorize(Roles = "Admin")]
+        [HttpDelete]
+        [Route("delete/{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> DeleteACategory(Guid id)
+        {
+            await _service.AdminUserService.DeleteCategory(id);
+            return NoContent();
         }
 
     }

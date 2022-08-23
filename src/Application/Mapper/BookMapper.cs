@@ -18,6 +18,8 @@ namespace Application.Mapper
                 .ForMember(dest => dest.BookImage, opt => opt.Ignore());
             CreateMap<Photo, BookImageDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+            CreateMap<Review, ViewReviewDTO>();
+            CreateMap<ICollection<Review>, ICollection<ViewReviewDTO>>();
         }
     }
 }
