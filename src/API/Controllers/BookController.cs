@@ -82,7 +82,7 @@ namespace API.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
-        [HttpPost]
+        [HttpPut]
         [Route("update")]
         [ProducesResponseType(typeof(SuccessResponse<BookDTO>), 200)]
         public async Task<IActionResult> UpdateABook(Guid bookId, [FromForm] UpdateBookDTO model)
