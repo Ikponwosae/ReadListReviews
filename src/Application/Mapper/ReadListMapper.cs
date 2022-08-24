@@ -20,6 +20,7 @@ namespace Application.Mapper
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Owner.Status))
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Owner.Role))
                 .ForMember(dest => dest.LastLogin, opt => opt.MapFrom(src => src.Owner.LastLogin));
+            CreateMap<ReadList, AllReadListDTO>();
         }
     }
 }

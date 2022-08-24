@@ -76,6 +76,12 @@ namespace Application.DataTransferObjects
         public ICollection<ViewBookDTO> Books { get; set; }
     }
 
+    public record AllReadListDTO
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+    }
+
     //public record UserResetPasswordDTO
     //{
     //    public Token Token { get; set; }

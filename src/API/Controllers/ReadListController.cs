@@ -25,7 +25,7 @@ namespace API.Controllers
         /// Endpoint to create user's read list
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles ="User")]
+        [Authorize(Roles ="User, Admin")]
         [HttpPost]
         [Route("create/{id}")]
         [ProducesResponseType(typeof(SuccessResponse<UserReadListDTO>), 200)]
@@ -90,6 +90,21 @@ namespace API.Controllers
         public async Task<IActionResult> ViewReadList(Guid id, Guid userId)
         {
             var response = await _service.SingleUserService.GetUserReadList(userId, id);
+            return Ok(response);
+        } 
+        
+        
+        /// <summary>
+        /// Endpoint to get readlists under a user
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles ="User, Admin")]
+        [HttpGet]
+        [Route("all/{userId}")]
+        [ProducesResponseType(typeof(SuccessResponse<AllReadListDTO>), 200)]
+        public async Task<IActionResult> ViewReadLists(Guid userId)
+        {
+            var response = await _service.SingleUserService.GetUserReadLists(userId);
             return Ok(response);
         }
 

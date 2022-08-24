@@ -323,6 +323,20 @@ namespace Application.Services
             _repository.Review.Delete(review);
             await _repository.SaveChangesAsync();
         }
+        
+        public async Task<SuccessResponse<AllReadListDTO>> GetUserReadLists(Guid userId)
+        {
+            var user = _repository.User.Get(x => x.Id == userId);
+            if (user == null)
+                throw new RestException(HttpStatusCode.NotFound, "User not found");
 
+            var readList = _repository.ReadList.Get(x => x.UserId == userId).FirstOrDefault();
+
+            return new SuccessResponse<AllReadListDTO>
+            {
+                Data = _mapper.Map<AllReadListDTO>(readList),
+                Message = "User read lists retrieved"
+            };
+        }
     }
 }
