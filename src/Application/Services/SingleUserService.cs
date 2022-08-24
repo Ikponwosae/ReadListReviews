@@ -241,6 +241,7 @@ namespace Application.Services
                     Status = x.Status,
                     CreatedAt = x.CreatedAt,
                     UserId = x.UserId,
+                    BookId = bookId,
                 });
 
             reviewsList.OrderByDescending(x => x.CreatedAt);
