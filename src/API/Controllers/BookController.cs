@@ -95,7 +95,6 @@ namespace API.Controllers
         /// Endpoint to delete a book
         ///</summary>
         /// <returns></returns>
-        /// 
         [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("delete-book/{bookId}")]
@@ -133,6 +132,64 @@ namespace API.Controllers
         {
             var response = await _service.SingleUserService.GetAllBooks(nameof(GetAllBooks), parameters, Url);
             return Ok(response);
+        }
+
+        /// <summary>
+        /// Endpoint to review a book
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "User, Admin")]
+        [HttpPost]
+        [Route("reviews/{bookId}")]
+        [ProducesResponseType(typeof(SuccessResponse<ReviewDTO>), 200)]
+        public async Task<IActionResult> ReviewABook(Guid userId, Guid bookId, [FromBody] CreateReviewDTO model)
+        {
+            var response = await _service.SingleUserService.ReviewABook(userId, bookId, model);
+            return Ok(response);
+        }
+
+        // <summary>
+        /// Endpoint to get all the reviews for a book
+        ///</summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("reviews/{bookId}/all")]
+        [ProducesResponseType(typeof(PagedResponse<IEnumerable<ReviewDTO>>), 200)]
+        public async Task<IActionResult> GetBookReviews(Guid bookId, [FromQuery] ResourceParameter parameters)
+        {
+            var response = await _service.SingleUserService.GetBookReviews(bookId, nameof(GetBookReviews), parameters, Url);
+            return Ok(response);
+        }
+        
+        // <summary>
+        /// Endpoint to get a review for a book
+        ///</summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("reviews/{id}")]
+        [ProducesResponseType(typeof(SuccessResponse<ReviewDTO>), 200)]
+        public async Task<IActionResult> GetAReviewById(Guid id)
+        {
+            var response = await _service.SingleUserService.GetReviewById(id);
+            return Ok(response);
+        }
+
+        // <summary>
+        /// Endpoint to delete a user's review
+        ///</summary>
+        /// <returns></returns>
+        [Authorize(Roles = "User, Admin")]
+        [HttpDelete]
+        [Route("reviews/delete/{reviewId}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> DeleteReview(Guid userId, Guid reviewId)
+        {
+            await _service.SingleUserService.DeleteReview(userId, reviewId);
+            return NoContent();
         }
     }
 }

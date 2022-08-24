@@ -7,6 +7,8 @@ using Infrastructure.Contracts;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
 {
@@ -213,6 +215,103 @@ namespace Application.Services
                     Pagination = page
                 }
             };
+        }
+
+
+        public async Task<PagedResponse<IEnumerable<ReviewDTO>>> GetBookReviews(Guid bookId, string actionName, ResourceParameter parameter, IUrlHelper urlHelper)
+        {
+            var book = await _repository.Book.Get(x => x.Id == bookId).FirstOrDefaultAsync();
+            if (book == null)
+                throw new RestException(HttpStatusCode.NotFound, "Book cannot be found");
+
+            var reviewsList = _repository.Review.QueryAll(x => x.BookId == bookId)
+                .Select(x => new ReviewDTO
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                    Status = x.Status,
+                    CreatedAt = x.CreatedAt,
+                    UserId = x.UserId,
+                });
+
+            reviewsList.OrderByDescending(x => x.CreatedAt);
+
+            var reviews = await PagedList<ReviewDTO>.Create(reviewsList, parameter.PageNumber, parameter.PageSize, parameter.Sort);
+            var page = PageUtility<ReviewDTO>.CreateResourcePageUrl(parameter, actionName, reviews, urlHelper);
+
+            return new PagedResponse<IEnumerable<ReviewDTO>>
+            {
+                Data = reviews,
+                Message = $"{book.Title} Reviews",
+                Meta = new Meta
+                {
+                    Pagination = page
+                }
+            };
+        }
+        public async Task<SuccessResponse<ReviewDTO>> ReviewABook(Guid userId, Guid bookId, CreateReviewDTO model)
+        {
+            var user = await _repository.User.Get(x => x.Id == userId).FirstOrDefaultAsync();
+            if (user == null)
+                throw new RestException(HttpStatusCode.NotFound, "User does not exist");
+
+            var book = await _repository.Book.Get(x => x.Id == bookId).FirstOrDefaultAsync();
+            if (book == null)
+                throw new RestException(HttpStatusCode.NotFound, "Book cannot be found");
+
+            var review = _mapper.Map<Review>(model);
+            review.Status = EReviewStatus.Posted.ToString();
+            review.CreatedAt = DateTime.UtcNow;
+            review.UserId = userId;
+            review.Owner = user;
+
+            _repository.Review.Create(review);
+
+            user.Reviews.Add(review);
+            book.Reviews.Add(review);
+
+            _repository.User.Update(user);
+            _repository.Book.Update(book);
+            await _repository.SaveChangesAsync();
+
+            var response = _mapper.Map<ReviewDTO>(review);
+
+            return new SuccessResponse<ReviewDTO>
+            {
+                Data = response,
+                Message = "Review created"
+            };
+        }
+        public async Task<SuccessResponse<ReviewDTO>> GetReviewById(Guid reviewId)
+        {
+            var review = await _repository.Review.Get(x => x.Id == reviewId).FirstOrDefaultAsync();
+            if (review == null)
+                throw new RestException(HttpStatusCode.NotFound, "Review does not exist");
+
+            var response = _mapper.Map<ReviewDTO>(review);
+
+            return new SuccessResponse<ReviewDTO>
+            {
+                Data = response,
+                Message = "Review retrieved"
+            };
+        }
+
+        public async Task DeleteReview(Guid userId, Guid reviewId)
+        {
+            var review = await _repository.Review.Get(x => x.Id == reviewId).FirstOrDefaultAsync();
+            if (review == null)
+                throw new RestException(HttpStatusCode.NotFound, "Review does not exist");
+
+            var user = await _repository.User.GetByIdAsync(userId);
+            if (user is null)
+                throw new RestException(HttpStatusCode.NotFound, "User not found");
+
+            if (review.UserId != userId)
+                throw new RestException(HttpStatusCode.Unauthorized, "You do not own this review");
+
+            _repository.Review.Delete(review);
+            await _repository.SaveChangesAsync();
         }
 
     }

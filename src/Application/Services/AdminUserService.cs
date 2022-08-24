@@ -182,6 +182,12 @@ namespace Application.Services
 
             var response = _mapper.Map<BookDTO>(book);
             response.Category = _mapper.Map<CreateCategoryDTO>(await _repository.Category.GetByIdAsync(book.CategoryId));
+            var reviewList = _repository.Review.QueryAll(x => x.BookId == bookId).ToList();
+            foreach (var review in reviewList)
+            {
+                var test = _mapper.Map<ReviewDTO>(review);
+                response.Reviews.Add(test);
+            }
 
             return new SuccessResponse<BookDTO>
             {
@@ -198,6 +204,13 @@ namespace Application.Services
             var response = _mapper.Map<BookDTO>(book);
             response.BookImage = _mapper.Map<BookImageDTO>(await _repository.Photo.Get(x => x.BookId == bookId).FirstOrDefaultAsync());
             response.Category = _mapper.Map<CreateCategoryDTO>(await _repository.Category.GetByIdAsync(book.CategoryId));
+
+            var reviewList = _repository.Review.QueryAll(x => x.BookId == bookId).ToList();
+            foreach(var review in reviewList)
+            {
+                var test = _mapper.Map<ReviewDTO>(review);
+                response.Reviews.Add(test);
+            }
 
             return new SuccessResponse<BookDTO>
             {
@@ -266,6 +279,12 @@ namespace Application.Services
 
             var response = _mapper.Map<BookDTO>(updatedBook);
             response.Category = _mapper.Map<CreateCategoryDTO>(await _repository.Category.GetByIdAsync(book.CategoryId));
+            var reviewList = _repository.Review.QueryAll(x => x.BookId == bookId).ToList();
+            foreach (var review in reviewList)
+            {
+                var test = _mapper.Map<ReviewDTO>(review);
+                response.Reviews.Add(test);
+            }
 
             return new SuccessResponse<BookDTO>
             {

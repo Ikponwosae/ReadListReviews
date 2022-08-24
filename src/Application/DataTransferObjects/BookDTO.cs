@@ -27,7 +27,7 @@ namespace Application.DataTransferObjects
         public int? Rating { get; set; }
         public BookImageDTO BookImage { get; set; }
         public string? BookImageUrl { get; set; }
-        public ICollection<ViewReviewDTO>? Reviews { get; set; }
+        public ICollection<ReviewDTO>? Reviews { get; set; }
         public CreateCategoryDTO Category { get; set; }
     }
 

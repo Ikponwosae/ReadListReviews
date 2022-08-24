@@ -11,7 +11,8 @@ namespace Application.Mapper
             CreateMap<Book, ViewBookDTO>();
             CreateMap<FetchBook, Book>();
             CreateMap<FetchBooksDTO, FetchBook>();
-            CreateMap<Book, BookDTO>();
+            CreateMap<Book, BookDTO>()
+                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Reviews));
             //.ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.CategoryId));
             CreateMap<AddBookDTO, Book>();
             CreateMap<UpdateBookDTO, Book>()
@@ -21,6 +22,7 @@ namespace Application.Mapper
             CreateMap<Review, ViewReviewDTO>();
             CreateMap<ICollection<Review>, ICollection<ViewReviewDTO>>();
             CreateMap<Review, ReviewDTO>();
+            CreateMap<CreateReviewDTO, Review>();
         }
     }
 }

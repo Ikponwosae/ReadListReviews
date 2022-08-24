@@ -13,7 +13,9 @@ namespace Application.Contracts
         Task<SuccessResponse<UserReadListDTO>> GetUserReadList(Guid userId, Guid readListId);
         Task<SearchBooksDTO> SearchBookCategoriesAuthors(ResourceParameter search);
         Task<PagedResponse<IEnumerable<BookDTO>>> GetAllBooks(string actionName, ResourceParameter parameters, IUrlHelper urlHelper);
-        //Task<PagedResponse<IEnumerable<ReviewDTO>>> GetBookReviews(Guid bookId, string actionName, ResourceParameter parameter, IUrlHelper urlHelper);
-        //Task<SuccessResponse<ReviewDTO>> ReviewABook(Guid userId, CreateReviewDTO model);
+        Task<PagedResponse<IEnumerable<ReviewDTO>>> GetBookReviews(Guid bookId, string actionName, ResourceParameter parameter, IUrlHelper urlHelper);
+        Task<SuccessResponse<ReviewDTO>> ReviewABook(Guid userId, Guid bookId, CreateReviewDTO model);
+        Task<SuccessResponse<ReviewDTO>> GetReviewById(Guid reviewId);
+        Task DeleteReview(Guid userId, Guid reviewId);
     }
 }
