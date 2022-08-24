@@ -201,6 +201,15 @@ namespace Application.Services
                    BookImageUrl = x.BookImageUrl,
                });
 
+            if (!string.IsNullOrWhiteSpace(parameters.Search))
+            {
+                string search = parameters.Search.Trim();
+                booksQuery = booksQuery.Where(x =>
+                    x.Title.Contains(search) ||
+                    x.Author.Contains(search) ||
+                    x.Description.Contains(search));
+            }
+
             booksQuery.OrderByDescending(x => x.Title);
 
             var books = await PagedList<BookDTO>.Create(booksQuery, parameters.PageNumber, parameters.PageSize);
